@@ -10,8 +10,9 @@
 library(shiny)
 library(dplyr)
 library(reshape2)
+library(ggplot2)
 
-# Define server logic required to draw a histogram
+# Define server logic required to draw a plot
 shinyServer(function(input, output) {
    
     # Grab the Data and Combine into One Dataframe
@@ -37,10 +38,14 @@ shinyServer(function(input, output) {
   output$distPlot <- renderPlot({
     
     # filter the dataframe based on inputs from ui.R
-    one_filtered <- filter(one, year <= input$range[2] & year > input$range[1], name = input$name, sex = input$sex)
+    one_filtered <- filter(one, year <= input$range[2] & year > input$range[1], name == input$name, sex == input$sex)
     
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    # use ggplot to plot the user selected name usage throughout the years
+    g <- ggplot(data = one_filtered, aes(x=year,y=n)) + 
+        geom_line() + 
+        xlab("Years") + 
+        ylab("Number of Baby Names")
+    g
     
   })
   
