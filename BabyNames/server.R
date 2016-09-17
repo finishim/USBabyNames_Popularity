@@ -36,9 +36,8 @@ shinyServer(function(input, output) {
     
   output$distPlot <- renderPlot({
     
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # filter the dataframe based on inputs from ui.R
+    one_filtered <- filter(one, year <= input$range[2] & year > input$range[1], name = input$name, sex = input$sex)
     
     # draw the histogram with the specified number of bins
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
