@@ -13,17 +13,15 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Baby Name Popularity by Year"),
   
-  # Sidebar with a slider input for number of bins 
+  # Sidebar with a text, radio button and slider input 
   sidebarLayout(
-    sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
-    ),
+      sidebarPanel(
+          textInput(inputId="name", label = "Enter Name:"),
+          radioButtons("sex", "Choose Gender:",c("Male" = "m","Female" = "f")),
+          sliderInput("range", "Choose Year:",min = 1880, max = 2015, value = c(1950,2015))
+      ),
     
     # Show a plot of the generated distribution
     mainPanel(
