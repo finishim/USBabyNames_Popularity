@@ -19,7 +19,7 @@ shinyUI(fluidPage(
   sidebarLayout(
       sidebarPanel(
           textInput(inputId="name", label = "Enter Name:"),
-          radioButtons("sex", "Choose Gender:",c("Male" = "m","Female" = "f")),
+          radioButtons("sex", "Choose Gender:",c("Male" = "M","Female" = "F")),
           sliderInput("range", "Choose Year:",min = 1880, max = 2015, value = c(1950,2015))
       ),
     
