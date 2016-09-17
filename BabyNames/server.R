@@ -8,10 +8,33 @@
 #
 
 library(shiny)
+library(dplyr)
+library(reshape2)
+library(readr2)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
    
+    # Grab the Data and Combine into One Dataframe
+    
+    ## The following code to merge the data files is sourced from Hadley's Github on babynames:
+    ## https://github.com/hadley/babynames/blob/master/data-raw/names.R
+    
+    if (!file.exists(".\\data\\names")) {
+        tmp <- tempfile(fileext = ".zip")
+        download.file("https://www.ssa.gov/oact/babynames/names.zip", tmp, quiet = TRUE)
+        unzip(tmp, exdir = ".\\data\\names")
+        unlink(tmp)
+    }
+    all <- dir(".\\data\\names", "\\.txt$", full.names = TRUE)
+    year <- as.numeric(gsub("[^0-9]", "", basename(all))) # grab the year from filenames
+    
+    data <- lapply(all, read.csv, header=F, stringsAsFactors = F) # read all the files in to aone dataframe
+    
+    one <- dplyr::bind_rows(data) # bind all rows into one dataframe
+    names(one) <- c("name", "sex", "n")
+    one$year <- rep(year, vapply(data, nrow, integer(1))) # add years as a column
+    
   output$distPlot <- renderPlot({
     
     # generate bins based on input$bins from ui.R
