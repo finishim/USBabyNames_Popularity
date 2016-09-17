@@ -1,0 +1,76 @@
+Developing Data Products
+========================================================
+author: Nazmi Anik
+date: 09/17/2016
+autosize: true
+
+### Coursera Course Project
+
+Developing Data Products
+========================================================
+  
+This presentation is part of the Developing Data Products course from Coursera.  
+  
+There are two purposes:
+
+- Creating a reactive shiny app (linked [here](https://finishim.shinyapps.io/BabyNamesPopularity/))
+- Creating a reproducible pitch presentation using Rstudio Presenter or Slidify
+
+Baby Name Popularity
+========================================================
+  
+The purpose of the Baby Name Popularity app is to look at the usage trend of a given name
+with a specified gender and within user-selected range of years.  
+Below is how the dataframe was formed from the data on [data.gov](https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data):  
+```{r code, eval=FALSE}
+if (!file.exists(".\\data\\names")) {
+    tmp <- tempfile(fileext = ".zip")
+    url <- "https://www.ssa.gov/oact/babynames/names.zip"
+    download.file(url, tmp, quiet = TRUE)
+    unzip(tmp, exdir = ".\\data\\names")
+    unlink(tmp)
+    }
+all <- dir(".\\data\\names", "\\.txt$", full.names = TRUE)
+year <- as.numeric(gsub("[^0-9]", "", basename(all))) 
+data <- lapply(all, read.csv, header=F, stringsAsFactors = F) 
+one <- do.call(rbind,data) 
+names(one) <- c("name", "sex", "n")
+one$year <- rep(year, vapply(data, nrow, integer(1))) 
+```
+
+Baby Name Popularity
+========================================================
+
+Here is the structure of this dataframe:  
+```{r evaluate, echo=FALSE}
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+if (!file.exists(".\\data\\names")) {
+    tmp <- tempfile(fileext = ".zip")
+    url <- "https://www.ssa.gov/oact/babynames/names.zip"
+    download.file(url, tmp, quiet = TRUE)
+    unzip(tmp, exdir = ".\\data\\names")
+    unlink(tmp)
+    }
+all <- dir(".\\data\\names", "\\.txt$", full.names = TRUE)
+year <- as.numeric(gsub("[^0-9]", "", basename(all))) 
+data <- lapply(all, read.csv, header=F, stringsAsFactors = F) 
+one <- do.call(rbind,data) 
+names(one) <- c("name", "sex", "n")
+one$year <- rep(year, vapply(data, nrow, integer(1)))
+str(one)
+```
+
+Baby Name Popularity
+========================================================
+  
+As an example, let's run this with a female name "Bonnie" between the years 1950-2000:  
+```{r plot, echo=FALSE}
+one_filtered <- filter(one, year <= "2000" & year > "1950", name == "Bonnie", sex == "F")
+g <- ggplot(data = one_filtered, aes(x=year,y=n)) + 
+    geom_line() + 
+    xlab("Years") + 
+    ylab("Number of Baby Names")
+g
+```
