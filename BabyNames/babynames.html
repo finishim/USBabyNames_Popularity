@@ -814,14 +814,7 @@ hljs.initHighlightingOnLoad();
 with a specified gender and within user-selected range of years.<br/>
 Below is how the dataframe was formed from the data on <a href="https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data">data.gov</a>:  </p>
 
-<pre><code class="r">if (!file.exists(&quot;.\\data\\names&quot;)) {
-    tmp &lt;- tempfile(fileext = &quot;.zip&quot;)
-    url &lt;- &quot;https://www.ssa.gov/oact/babynames/names.zip&quot;
-    download.file(url, tmp, quiet = TRUE)
-    unzip(tmp, exdir = &quot;.\\data\\names&quot;)
-    unlink(tmp)
-    }
-all &lt;- dir(&quot;.\\data\\names&quot;, &quot;\\.txt$&quot;, full.names = TRUE)
+<pre><code class="r">all &lt;- dir(&quot;.\\data\\names&quot;, &quot;\\.txt$&quot;, full.names = TRUE)
 year &lt;- as.numeric(gsub(&quot;[^0-9]&quot;, &quot;&quot;, basename(all))) 
 data &lt;- lapply(all, read.csv, header=F, stringsAsFactors = F) 
 one &lt;- do.call(rbind,data) 

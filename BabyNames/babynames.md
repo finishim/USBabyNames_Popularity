@@ -24,13 +24,6 @@ with a specified gender and within user-selected range of years.
 Below is how the dataframe was formed from the data on [data.gov](https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data):  
 
 ```r
-if (!file.exists(".\\data\\names")) {
-    tmp <- tempfile(fileext = ".zip")
-    url <- "https://www.ssa.gov/oact/babynames/names.zip"
-    download.file(url, tmp, quiet = TRUE)
-    unzip(tmp, exdir = ".\\data\\names")
-    unlink(tmp)
-    }
 all <- dir(".\\data\\names", "\\.txt$", full.names = TRUE)
 year <- as.numeric(gsub("[^0-9]", "", basename(all))) 
 data <- lapply(all, read.csv, header=F, stringsAsFactors = F) 
